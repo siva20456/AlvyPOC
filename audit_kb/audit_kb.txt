@@ -1,0 +1,163 @@
+This knowledge base is designed to aid an AI agent in analyzing screen image and face image descriptions and result responses from proctored exam sessions. It provides structured guidelines and categories for identifying anomalies and creating detailed reports in a consistent format. The focus is on categorizing observations into flag categories with associated metadata like descriptions, confidence scores, and more.
+
+This expects image descriptions and respected response flags and validates it thoroughly to check if the input-ouput things match with context
+
+Use Cases
+1. Proctoring and Monitoring:
+   - Analyzing exam session images for anomalies like test-taker absence, unauthorized materials, or suspicious behavior.
+   - Generating detailed reports for administrators and notifications for test-takers based on observations.
+
+2. Training AI Models:
+   - Utilizing the structured data for training Retrieval-Augmented Generation (RAG) models or other LLM-based agents.
+   - Enhancing automated monitoring systems with well-defined flag categories and descriptions.
+
+3. Feedback and Improvement:
+   - Providing clear feedback to test-takers to encourage adherence to exam policies.
+   - Assisting administrators in identifying patterns or frequent issues for policy adjustments.
+
+Flags
+1. TestTakerAbsent:
+   - Definition: No human is visible in the image.
+   - Example Description:
+     - Admin: "The attendee is not seen in the test window."
+     - Test Taker: "Moving away from the test window is not permitted."
+   - Confidence Range: 0.7 to 1.0.
+
+2. SuspiciousBehavior:
+   - Definition: Actions that suggest malpractice or rule violations or head of the human is not facing towards front, hand gestures.
+   - Examples:
+     - Looking off-screen repeatedly.
+     - Unusual hand gestures.
+   - Confidence Range: 0.5 to 0.9.
+
+3. UnauthorizedMaterials:
+   - Definition: Presence of objects like books, notes, or electronic devices.
+   - Examples:
+     - Admin: "Unauthorized materials are visible on the desk."
+     - Test Taker: "Please ensure your desk is clear of unauthorized items."
+   - Confidence Range: 0.8 to 1.0.
+
+4. AdditionalPerson:
+   - Definition: Detection of more than one person or another individual in the test-taker's environment.
+   - Examples:
+     - Admin: "Another person is present in the test area."
+     - Test Taker: "No other individuals are allowed in the test area."
+   - Confidence Range: 0.7 to 1.0.
+
+5. SuboptimalProctoringCondition:
+   - Definition: Issues like poor lighting, blurry camera, or obstructed view.
+   - Examples:
+     - Admin: "Lighting is inadequate for proper monitoring."
+     - Test Taker: "Improve lighting conditions to ensure visibility."
+   - Confidence Range: 0.6 to 0.9.
+
+6. Observations:
+   - Definition: General observations not falling under specific flags but worth noting.
+   - Examples:
+     - Admin: "The test taker appears distracted."
+     - Test Taker: "Maintain focus to avoid unnecessary interruptions."
+   - Confidence Range: 0.5 to 0.8.
+
+7. NoAnomilies:
+   - Definition: The test session image does not indicate any anomalies or violations.
+   - Examples:
+     - Admin: "No issues observed in the test session."
+     - Test Taker: "Your test session is proceeding smoothly."
+   - Confidence Range: 1.0.
+
+
+Anomalies on a test-taker's screen include visiting unauthorized websites such as search engines, 
+forums, or collaboration platforms during the exam.
+
+Using AI tools like ChatGPT, Codex, or other automated problem-solving software during an exam 
+is strictly prohibited and flagged as malpractice.
+
+Switching between multiple browser tabs or applications may indicate attempts to bypass exam restrictions.
+
+The presence of communication tools such as Slack, Microsoft Teams, or WhatsApp on the screen during the exam 
+indicates a potential collaboration or external help.
+
+Detecting tools or software not explicitly permitted by the exam guidelines, such as IDEs or code compilers, 
+can be categorized as violations.
+
+
+Here is the detailed text format for the anomalies, flags, and expected output:
+
+1. Unauthorized Websites
+   Description: Detects access to websites or platforms not allowed during the exam.
+   
+   - Flags:
+     - SearchEngineAccess: Detected use of search engines like Google, Bing, or DuckDuckGo.
+     - AcademicForumAccess: Detected access to platforms like Stack Overflow, Reddit, or ResearchGate.
+     - CollaborationPlatformAccess: Detected use of online collaboration platforms like Notion or Trello.
+     - EducationalResourceAccess: Detected access to online educational platforms like Chegg or Khan Academy.
+   
+ 
+
+
+2. AI Tool Usage
+   Description: Detects the use of AI-powered tools for assistance during the exam.
+   
+   - Flags:
+     - TextGenerationTool: Detected use of tools like ChatGPT or Jasper for text generation.
+     - CodeGenerationTool: Detected use of tools like Codex or GitHub Copilot for code assistance.
+     - MathSolverTool: Detected use of tools like Wolfram Alpha or Symbolab for solving math problems.
+     - TranslationTool: Detected use of language translation tools like Google Translate or DeepL.
+   
+  
+
+
+3. Application or Tab Switching
+   Description: Identifies frequent switching between applications or tabs during the exam.
+   
+   - Flags:
+     - FrequentTabSwitching: Detected frequent switching between browser tabs.
+     - MultipleApplicationUsage: Detected simultaneous use of multiple applications.
+     - VirtualDesktopUsage: Detected use of virtual desktops for hiding or accessing other resources.
+   
+  
+
+4. Communication Tools
+   Description: Detects the presence of communication tools on the screen.
+   
+   - Flags:
+     - ChatAppUsage: Detected use of apps like WhatsApp, Telegram, or Slack.
+     - EmailAccess: Detected use of email services like Gmail or Outlook.
+     - VideoConferencingTool: Detected use of video conferencing tools like Zoom or Skype.
+   
+   
+
+
+5. Unauthorized Software Usage
+   Description: Detects the use of unauthorized software or tools during the exam.
+   
+   - Flags:
+     - IDEUsage: Detected use of IDEs like VS Code or PyCharm.
+     - CompilerUsage: Detected use of compilers or interpreters like GCC or Jupyter Notebook.
+     - AdvancedCalculationTool: Detected use of tools like MATLAB or Mathematica.
+     - GraphicDesignTool: Detected use of tools like Photoshop or Illustrator.
+   
+  
+
+6. General Malpractice Indicators
+   Description: Identifies other general behaviors indicating malpractice.
+   
+   - Flags:
+     - VPNUsage: Detected use of VPN or remote access tools.
+     - BackgroundScripts: Detected scripts running in the background.
+     - ScreenSharingTool: Detected use of screen-sharing or remote desktop tools.
+  
+
+
+
+Final Output 
+
+after thoroughly validating the input description and responses it should send the output in confidence score from 0 to 1
+
+Expected Final Output:
+{
+    "validation score": 0 - 1
+}
+
+
+This format provides a comprehensive description of possible anomalies and their corresponding flags. It also gives an expected output format to structure the response from your agent. The use of flags allows for detailed classification, while the expected output helps in making sure the results are clear, structured, and easy to interpret.

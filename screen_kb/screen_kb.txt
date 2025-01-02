@@ -1,0 +1,131 @@
+This knowledge base is designed to aid an AI agent in analyzing screen image descriptions from proctored exam sessions. It provides structured guidelines and categories for identifying anomalies and creating detailed reports in a consistent format. The focus is on categorizing observations into flag categories with associated metadata like descriptions, confidence scores, and more.
+
+Anomalies on a test-taker's screen include visiting unauthorized websites such as search engines, 
+forums, or collaboration platforms during the exam.
+
+1. If the screen contains Talview page or talview text in it there is no need to mention any of anomalies
+2. If the screen interface conatins any of person image with image or video capture tool (except zoom/skype tools) you no need mention any of anomalies as the interface is testing before exam session
+
+
+Using AI tools like ChatGPT, Codex, or other automated problem-solving software during an exam 
+is strictly prohibited and flagged as malpractice.
+
+Switching between multiple browser tabs or applications may indicate attempts to bypass exam restrictions.
+
+The presence of communication tools such as Slack, Microsoft Teams, or WhatsApp on the screen during the exam 
+indicates a potential collaboration or external help.
+
+Detecting tools or software not explicitly permitted by the exam guidelines, such as IDEs or code compilers, 
+can be categorized as violations.
+
+Standard Output Format - What ever the output you got, give in this format only - 
+
+{
+  "flag": Type of Flag,
+  "details": details about the flag
+}
+
+Here is the detailed text format for the anomalies, flags, and expected output:
+
+1. Unauthorized Websites
+   Description: Detects access to websites or platforms not allowed during the exam.
+   
+   - Flags:
+     - SearchEngineAccess: Detected use of search engines like Google, Bing, or DuckDuckGo.
+     - AcademicForumAccess: Detected access to platforms like Stack Overflow, Reddit, or ResearchGate.
+     - CollaborationPlatformAccess: Detected use of online collaboration platforms like Notion or Trello.
+     - EducationalResourceAccess: Detected access to online educational platforms like Chegg or Khan Academy.
+   
+   Expected Output:
+   {
+     "flag": "SearchEngineAccess",
+     "details": "Google was accessed during the exam."
+   }
+
+
+2. AI Tool Usage
+   Description: Detects the use of AI-powered tools for assistance during the exam.
+   
+   - Flags:
+     - TextGenerationTool: Detected use of tools like ChatGPT or Jasper for text generation.
+     - CodeGenerationTool: Detected use of tools like Codex or GitHub Copilot for code assistance.
+     - MathSolverTool: Detected use of tools like Wolfram Alpha or Symbolab for solving math problems.
+     - TranslationTool: Detected use of language translation tools like Google Translate or DeepL.
+   
+   Expected Output:
+   {
+     "flag": "MathSolverTool",
+     "details": "Symbolab was used to solve a calculus problem."
+   }
+
+
+3. Application or Tab Switching
+   Description: Identifies frequent switching between applications or tabs during the exam.
+   
+   - Flags:
+     - FrequentTabSwitching: Detected frequent switching between browser tabs.
+     - MultipleApplicationUsage: Detected simultaneous use of multiple applications.
+     - VirtualDesktopUsage: Detected use of virtual desktops for hiding or accessing other resources.
+   
+   Expected Output:
+   {
+     "flag": "FrequentTabSwitching",
+     "details": "The test-taker switched tabs 10 times in 5 minutes."
+   }
+
+
+4. Communication Tools
+   Description: Detects the presence of communication tools on the screen.
+   
+   - Flags:
+     - ChatAppUsage: Detected use of apps like WhatsApp, Telegram, or Slack.
+     - EmailAccess: Detected use of email services like Gmail or Outlook.
+     - VideoConferencingTool: Detected use of video conferencing tools like Zoom or Skype.
+   
+   Expected Output:
+   {
+     "flag": "ChatAppUsage",
+     "details": "WhatsApp was open during the exam."
+   }
+
+
+5. Unauthorized Software Usage
+   Description: Detects the use of unauthorized software or tools during the exam.
+   
+   - Flags:
+     - IDEUsage: Detected use of IDEs like VS Code or PyCharm.
+     - CompilerUsage: Detected use of compilers or interpreters like GCC or Jupyter Notebook.
+     - AdvancedCalculationTool: Detected use of tools like MATLAB or Mathematica.
+     - GraphicDesignTool: Detected use of tools like Photoshop or Illustrator.
+   
+   Expected Output:
+   {
+     "flag": "IDEUsage",
+     "details": "Visual Studio Code was running during the exam."
+   }
+
+
+6. General Malpractice Indicators
+   Description: Identifies other general behaviors indicating malpractice.
+   
+   - Flags:
+     - VPNUsage: Detected use of VPN or remote access tools.
+     - BackgroundScripts: Detected scripts running in the background.
+     - ScreenSharingTool: Detected use of screen-sharing or remote desktop tools.
+   
+   Expected Output:
+   {
+     "flag": "VPNUsage",
+     "details": "A VPN connection was active during the exam."
+   }
+
+Here is the detailed text format for the non-anomalies, non-flags, and expected output:
+
+if no anomalies found then send the ouput as 
+Expected JSON Output:
+   {
+     "flag": "NoAnomalies",
+     "details": "No anomalies found during the exam."
+   }
+
+This format provides a comprehensive description of possible anomalies and their corresponding flags. It also gives an expected output format to structure the response from your agent. The use of flags allows for detailed classification, while the expected output helps in making sure the results are clear, structured, and easy to interpret.

@@ -1,0 +1,105 @@
+This knowledge base is designed to aid an AI agent in analyzing image descriptions from proctored exam sessions. It provides structured guidelines and categories for identifying anomalies and creating detailed reports in a consistent format. The focus is on categorizing observations into flag categories with associated metadata like descriptions, confidence scores, and more.
+
+Use Cases
+1. Proctoring and Monitoring:
+   - Analyzing exam session images for anomalies like test-taker absence, unauthorized materials, or suspicious behavior.
+   - Generating detailed reports for administrators and notifications for test-takers based on observations.
+
+2. Training AI Models:
+   - Utilizing the structured data for training Retrieval-Augmented Generation (RAG) models or other LLM-based agents.
+   - Enhancing automated monitoring systems with well-defined flag categories and descriptions.
+
+3. Feedback and Improvement:
+   - Providing clear feedback to test-takers to encourage adherence to exam policies.
+   - Assisting administrators in identifying patterns or frequent issues for policy adjustments.
+
+Flags
+1. TestTakerAbsent:
+   - Definition: No human is visible in the image.
+   - Example Description:
+     - Admin: "The attendee is not seen in the test window."
+     - Test Taker: "Moving away from the test window is not permitted."
+   - Confidence Range: 0.7 to 1.0.
+
+2. SuspiciousBehavior:
+   - Definition: Actions that suggest malpractice or rule violations or head of the human is not facing towards front, hand gestures.
+   - Examples:
+     - Looking off-screen repeatedly.
+     - Unusual hand gestures.
+   - Confidence Range: 0.5 to 0.9.
+
+3. UnauthorizedMaterials:
+   - Definition: Presence of objects like books, notes, or electronic devices.
+   - Examples:
+     - Admin: "Unauthorized materials are visible on the desk."
+     - Test Taker: "Please ensure your desk is clear of unauthorized items."
+   - Confidence Range: 0.8 to 1.0.
+
+4. AdditionalPerson:
+   - Definition: Detection of more than one person or another individual in the test-taker's environment.
+   - Examples:
+     - Admin: "Another person is present in the test area."
+     - Test Taker: "No other individuals are allowed in the test area."
+   - Confidence Range: 0.7 to 1.0.
+
+5. SuboptimalProctoringCondition:
+   - Definition: Issues like poor lighting, blurry camera, or obstructed view.
+   - Examples:
+     - Admin: "Lighting is inadequate for proper monitoring."
+     - Test Taker: "Improve lighting conditions to ensure visibility."
+   - Confidence Range: 0.6 to 0.9.
+
+6. Observations:
+   - Definition: General observations not falling under specific flags but worth noting.
+   - Examples:
+     - Admin: "The test taker appears distracted."
+     - Test Taker: "Maintain focus to avoid unnecessary interruptions."
+   - Confidence Range: 0.5 to 0.8.
+
+7. NoAnomilies:
+   - Definition: The test session image does not indicate any anomalies or violations.
+   - Examples:
+     - Admin: "No issues observed in the test session."
+     - Test Taker: "Your test session is proceeding smoothly."
+   - Confidence Range: 1.0.
+
+Results
+Each analyzed image should be documented in JSON format as follows:
+
+JSON Output Format:
+{
+  "flags": [
+    {
+      "flag_type": "<FlagType>",
+      "description_admin": "<Brief description for admin, max 30 words>",
+      "description_test_taker": "<Brief description for test taker, max 30 words>",
+      "confidence": <Decimal value between 0 and 1>
+    }
+  ]
+}
+
+Example JSON Output:
+{
+  "flags": [
+    {
+      "flag_type": "TestTakerAbsent",
+      "description_admin": "The attendee is not seen in the test window.",
+      "description_test_taker": "Moving away from the test window is not permitted.",
+      "confidence": 0.80
+    }
+  ]
+}
+
+Handling Missing Data:
+- If certain information is unavailable, use `NoneType` as a placeholder.
+- Example:
+{
+  "flags": [
+    {
+      "flag_type": "NoneType",
+      "description_admin": "NoneType",
+      "description_test_taker": "NoneType",
+      "confidence": "NoneType"
+    }
+  ]
+}
