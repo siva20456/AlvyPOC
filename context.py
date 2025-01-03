@@ -57,6 +57,10 @@ screen_desc_msg = """
 Analyze the image and describe it. Describe it in paragraph with the tools, tabs detected, solvers indicated. output should not contain extra info about other thoughts and environments and hallucinations are not allowed.
 """
 
+chat_desc_msg = """
+Analyze the image and describe it. Describe it in paragraph with information about the current tab that he opened.
+"""
+
 camera_engine_desc = """
 Provides information about the flags according to the image description. Use a detailed plain text question as input to the tool.And give flag and test taker description as JSON output.
 """

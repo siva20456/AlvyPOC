@@ -69,7 +69,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 
 
-base_url = 'https://certification.talview.com/support/solutions'
+base_url = 'https://talview.freshdesk.com/support/home'
 
 
 def is_valid_url(url, base_domain):
@@ -90,6 +90,7 @@ def scrape_page(url, file):
     
     paragraphs = soup.find_all('p')
     headings_h3 = soup.find_all('h3')
+    headings_h2 = soup.find_all('h2')
     spans = soup.find_all('span')
     headings_h1 = soup.find_all('h1')
     
@@ -98,30 +99,39 @@ def scrape_page(url, file):
     page_headings_h3 = [h3.get_text() for h3 in headings_h3]
     page_spans = [span.get_text() for span in spans]
     page_headings_h1 = [h1.get_text() for h1 in headings_h1]
+    page_headings_h2 = [h2.get_text() for h2 in headings_h2]
+    
     
     file.write(f"Page URL: {url}\n")
     file.write(f"Page Title: {page_title}\n\n")
-    print(page_headings_h1,page_headings_h3,page_spans,page_paragraphs)
+    print(page_headings_h1,page_headings_h3,page_spans,page_paragraphs,page_headings_h2)
+    
+
+    
+    if len(page_headings_h3) > 0:
+        for h3 in page_headings_h3:  
+            if len(h3) > 1:
+                file.write(f"- {h3}\n")
+                
+    if len(page_headings_h2) > 0:
+        for h2 in page_headings_h2:  
+            if len(h2) > 1:
+                file.write(f"- {h2}\n")
+    
+    if len(page_headings_h1) > 0:
+        for h1 in page_headings_h1: 
+            if len(h1) > 1:
+                file.write(f"- {h1}\n")
     
     if len(page_paragraphs) > 1:
         for para in page_paragraphs:  
             if len(para) > 1:
                 file.write(f"- {para}\n")
-    
-    if len(page_headings_h3) > 0:
-        for h3 in page_headings_h3:  
-            if len(para) > 1:
-                file.write(f"- {h3}\n")
-    
+                
     if len(page_spans) >0:
         for span in page_spans:  
-            if len(para) > 1:
+            if len(span) > 1:
                 file.write(f"- {span}\n")
-    
-    if len(page_headings_h1) > 0:
-        for h1 in page_headings_h1: 
-            if len(para) > 1:
-                file.write(f"- {h1}\n")
     
     file.write("\n" + "-"*50 + "\n\n")
     

@@ -1,10 +1,12 @@
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings, StorageContext, load_index_from_storage
 from llama_index.llms.openai import OpenAI
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
-from llama_index.core.memory import ChatMemoryBuffer
-from llama_index.storage.chat_store.redis import RedisChatStore
+from llama_index.core.memory import ChatMemoryBuffer,chat_memory_buffer
+# from llama_index.storage.chat_store.redis import RedisChatStore
+from image_describe import describe_image
+from context import chat_desc_msg
 import os 
-
+import json
 
 
 Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-base-en-v1.5")
@@ -13,17 +15,26 @@ Settings.llm = OpenAI(model="gpt-4o-mini",api_key="", request_timeout=360.0)
 
 memory_dict = {}
 
-chat_store = RedisChatStore(redis_url="redis://localhost:6379", ttl=300, password="myredissecret")
+# chat_store = RedisChatStore(redis_url="redis://localhost:6379", ttl=300, password="myredissecret")
 
 
-def chatting_agent(query,browserDetails,userId):
+def chatting_agent(query,browserDetails,userId,memory,screen):
     
     # if userId not in memory_dict:
-    #     memory_dict[userId] = ChatMemoryBuffer.from_defaults(token_limit=15000)
-    memory = ChatMemoryBuffer.from_defaults(token_limit=15000,chat_store=chat_store,chat_store_key=userId)
+    #     memory_dict[userId] = ChatMemoryBuffer.from_defaults(token_limit=15000,chat_store_key=userId)
     
-    # memory = memory_dict[userId]
-    # print(memory.get())
+    if not memory:
+        print('In')
+        memory = ChatMemoryBuffer.from_defaults(token_limit=15000,chat_store_key=userId)
+    else:
+        memory = ChatMemoryBuffer.from_dict(memory)
+    print(memory)
+    
+    img_desc = ''
+    if screen is not None:
+        img_desc = "Iam giving you a breif description on my screen just consider only issues that you know and visible. And dont consider unwanted description. "
+        img_desc += describe_image(screen,chat_desc_msg)
+        
 
     PERSIST_DIR = "./chat_bot_storage"
     if not os.path.exists(PERSIST_DIR):
@@ -47,11 +58,13 @@ def chatting_agent(query,browserDetails,userId):
             "Broswer and system details are {} use these for answering issues based on browser and system".format(query_input)
         ),
     )
-    res1 = chat_engine.chat(query)
+    res1 = chat_engine.chat(query+img_desc)
+    
+    serial_mem = memory.to_string()
     
     
     
-    return res1
+    return (res1,serial_mem)
 
 
 # response = chatting_agent("My mic is not working what should i do?")

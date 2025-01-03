@@ -9,6 +9,7 @@ import os
 from langfuse.llama_index import LlamaIndexInstrumentor
 from fastapi import FastAPI
 from pydantic import BaseModel
+from typing import Optional
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -41,7 +42,7 @@ async def add_keep_alive_header(request, call_next):
 
 os.environ["LANGFUSE_PUBLIC_KEY"] = ""
 os.environ["LANGFUSE_SECRET_KEY"] = ""
-os.environ["LANGFUSE_HOST"] = "http://localhost:3000"
+os.environ["LANGFUSE_HOST"] = ""
 os.environ["OPENAI_API_KEY"] = ""
 
 langfuse_client = Langfuse(
@@ -66,6 +67,7 @@ class ChatReq(BaseModel):
     query: str
     userId: str
     browserDetails: object
+    screen: Optional[str] = None
 
 @app.post('/agent/camera')
 def main_camera(obj: Req):
@@ -119,35 +121,45 @@ def main_screen(obj: Req):
     }
     return JSONResponse(res)
 
-@app.post('/agent/chat1')
-def main_chat1(obj: ChatReq):
+@app.post('/agent/chat')
+def main_chat(obj: ChatReq):
+    session_id = "Test ChatBot by {}".format(obj.userId)
     trace = langfuse_client.trace(
         name = "KB Chat Bot",
         user_id = obj.userId,
-        metadata = {
-            "email": "user@langfuse.com",
-        },
-        session_id = "Session Chat by {}".format(obj.userId),
+        session_id = session_id,
         tags = ["Python"],
         input = obj.query
     )
+    memory = {}
+    traces = langfuse_client.get_traces(session_id=session_id)
+    print(traces)
+    if len(traces.data) > 0:
+        # Extract the latest memory context
+        latest_trace = max(traces.data, key=lambda t: t.createdAt)
+        print(latest_trace)
+        memory = latest_trace.metadata['metadata']
+        print(memory)
     with instrumentor.observe(trace_id=trace.id, update_parent=False):
-        chat_response = chatting_agent(obj.query,obj.browserDetails,obj.userId)
+        chat_response,mem = chatting_agent(obj.query,obj.browserDetails,obj.userId,memory,obj.screen)
     trace.update(
-        output=chat_response.response
+        output=chat_response.response,
+        metadata=mem
     )
+    print(mem)
     res = {
         "chat_bot": chat_response.response
     }
     return JSONResponse(res)
 
-@app.post('/agent/chat')
-def main_chat(obj: ChatReq):
-    chat_response = chatting_agent(obj.query,obj.browserDetails,obj.userId)
-    res = {
-        "chat_bot": chat_response.response
-    }
-    return JSONResponse(res)
+# @app.post('/agent/chat')
+# def main_chat(obj: ChatReq):
+#     chat_response,mem = chatting_agent(obj.query,obj.browserDetails,obj.userId)
+#     print(mem)
+#     res = {
+#         "chat_bot": chat_response.response
+#     }
+#     return JSONResponse(res)
     
 
 # @app.post('/agent/validate')
@@ -157,6 +169,8 @@ def main_chat(obj: ChatReq):
 #     for e in traces.data:
         
     
+# traces = langfuse_client.get_traces(session_id="Session ChatBot by Siva098")
+# print(traces)
 
 
 # @app.post('/sessions')
